@@ -1,4 +1,4 @@
-from core import *
+from dbs.core import *
 from field import Field
 
 

@@ -1,4 +1,4 @@
-from core import *
+from dbs.core import *
 
 
 class Field(SerializationInterface):
@@ -118,4 +118,3 @@ class Field(SerializationInterface):
             obj.add(value)
 
         return obj
-    
