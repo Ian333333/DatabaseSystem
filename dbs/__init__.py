@@ -127,7 +127,7 @@ class Engine:
         return tables
 
     def __get_table(self, table_name):
-        self.__check_current_bd()
+        self.__check_current_db()
 
         table = self.__current_db.get_table_obj(table_name)
 
@@ -137,5 +137,5 @@ class Engine:
         return table
 
     def __check_current_db(self):
-        if not self.__current_db or not isinstance((self.__current_db, Database)):
+        if not self.__current_db or not isinstance(self.__current_db, Database):
             raise Exception('No database selected')

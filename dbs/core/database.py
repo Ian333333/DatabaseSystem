@@ -1,5 +1,5 @@
 from dbs.core import *
-from table import Table
+from dbs.core.table import Table
 
 class Database(SerializationInterface):
     def __init__(self, name):

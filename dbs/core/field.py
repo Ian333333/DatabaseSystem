@@ -34,7 +34,7 @@ class Field(SerializationInterface):
 
     # data type match or not
     def __check_type(self, value):
-        if value is not None and not isinstance((value, TYPE_MAP[self.__type.value])):
+        if value is not None and not isinstance(value, TYPE_MAP[self.__type.value]):
             raise TypeError('data type error, value must be %s' % self.__type)
 
     #

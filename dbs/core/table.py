@@ -1,5 +1,5 @@
 from dbs.core import *
-from field import Field
+from dbs.core.field import Field
 
 
 class Table(SerializationInterface):
