@@ -34,7 +34,7 @@ class Database(SerializationInterface):
         for table_name, table_data in self.__table_objs.items():
             data['tables'].append([table_name, table_data.serialize()])
 
-        return SerializationInterface.json.dumps()
+        return SerializationInterface.json.dumps(data)
 
     @staticmethod
     def deserialize(data):

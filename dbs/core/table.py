@@ -143,7 +143,7 @@ class Table(SerializationInterface):
     def serialize(self):
         data = {}
         for field in self.__field_names:
-            data[field] = self.__field_objs[field].serialized()
+            data[field] = self.__field_objs[field].serialize()
 
         return SerializationInterface.json.dumps(data)
 

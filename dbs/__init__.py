@@ -29,6 +29,8 @@ class Engine:
         self.__format_type = format_type
         self.__path = path
 
+        self.__load_databases()
+
     def select_db(self, db_name):
         if db_name not in self.__database_names:
             raise Exception('Database not exists')
