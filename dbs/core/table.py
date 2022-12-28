@@ -1,3 +1,4 @@
+from dbs.case.case import BaseCase
 from dbs.core import *
 from dbs.core.field import Field
 
@@ -76,9 +77,55 @@ class Table(SerializationInterface):
         field = self.__get_field(field_name)
         return field.get_data(index)
 
+    def __get_field_type(self, field_name):
+        field = self.__get_field(field_name)
+        return field.get_type()
+
     def __parse_conditions(self, **conditions):
-        # temporarily use
-        match_index = range(0, self.__rows)
+        if 'conditions' in conditions:
+            conditions = conditions['conditions']
+
+        if not conditions:
+            match_index = range(0, self.__rows)
+        else:
+            name_tmp = self.__get_name_tmp(**conditions)
+
+            match_tmp = []
+
+            match_index = []
+
+            is_first_loop = True
+
+            for field_name in name_tmp:
+                data = self.__get_field_data(field_name)
+
+                data_type = self.__get_field_type(field_name)
+
+                case = conditions[field_name]
+
+                if not isinstance(case, BaseCase):
+                    raise TypeError('Type error, value must be "Case" object')
+
+                # find indexes that match the first condition in the first loop
+                # then remove indexes that do not match other conditions
+                if is_first_loop:
+                    length = self.__get_field_length(field_name)
+
+                    for index in range(0, length):
+                        if case(data[index], data_type):
+                            match_tmp.append(index)
+                            match_index.append(index)
+
+                    is_first_loop = False
+
+                    continue
+
+                for index in match_tmp:
+                    if not case(data[index], data_type):
+                        match_index.remove(index)
+
+                match_tmp = match_index
+
         return match_index
 
     def delete(self, **conditions):

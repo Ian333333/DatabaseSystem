@@ -114,7 +114,7 @@ class Field(SerializationInterface):
         keys = [FieldKey(key) for key in json_data['key']]
         obj = Field(FieldType(json_data['type']), keys, default=json_data['default'])
 
-        for value in json_data['value']:
+        for value in json_data['values']:
             obj.add(value)
 
         return obj

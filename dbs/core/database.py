@@ -39,8 +39,8 @@ class Database(SerializationInterface):
     @staticmethod
     def deserialize(data):
         json_data = SerializationInterface.json.loads(data)
-        obj_tmp = Database(data['name'])
-        for table_name, table_obj in data['tables']:
+        obj_tmp = Database(json_data['name'])
+        for table_name, table_obj in json_data['tables']:
             obj_tmp.add_table(table_name, Table.deserialize(table_obj))
         return obj_tmp
 
