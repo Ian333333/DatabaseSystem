@@ -1,6 +1,7 @@
 from dbs.core import *
 from dbs.core.table import Table
 
+
 class Database(SerializationInterface):
     def __init__(self, name):
         self.__name = name

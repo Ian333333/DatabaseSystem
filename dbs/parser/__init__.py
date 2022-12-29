@@ -37,8 +37,6 @@ class SQLParser:
         }
 
     def __filter_space(self, obj):
-        obj = obj.split(" ")
-
         res = []
         for x in obj:
             if x.strip() == '' or x.strip() == 'AND' or x.strip() == 'OR':
@@ -75,7 +73,8 @@ class SQLParser:
         conditions = None
 
         if len(statement) == 2:
-            conditions = self.__filter_space(statement[1])
+
+            conditions = self.__filter_space(statement[1].split(' '))
 
         if conditions:
             for index in range(0, len(conditions), 3):

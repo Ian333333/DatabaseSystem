@@ -1,9 +1,13 @@
 from dbs.core import *
 from dbs.core.database import Database
 
+import prettytable
+
 import base64
 
 import os
+
+from dbs.parser import SQLParser
 
 
 def _decode_db(content):
@@ -30,6 +34,91 @@ class Engine:
         self.__path = path
 
         self.__load_databases()
+
+        self.__action_map = {
+            'insert': self.__insert,
+            'update': self.__update,
+            'search': self.__search,
+            'delete': self.__delete,
+            'drop': self.__drop,
+            'show': self.__show,
+            'use': self.__use,
+            'exit': self.__exit
+        }
+
+    def __insert(self, action):
+        table = action['table']
+        data = action['data']
+
+        return self.insert(table, data=data)
+
+    def __update(self, action):
+        table = action['table']
+        data = action['data']
+        conditions = action['conditions']
+
+        return self.update(table, data, conditions=conditions)
+
+    def __delete(self, action):
+        table = action['table']
+        conditions = action['conditions']
+
+        return self.delete(table, conditions=conditions)
+
+    def __search(self, action):
+        table = action['table']
+        fields = action['fields']
+        conditions = action['condition']
+
+        return self.search(table, fields=fields, conditions=conditions)
+
+    def __drop(self, action):
+        if action['level'] == 'database':
+            return self.drop_database(action['name'])
+        return self.drop_table(action['name'])
+
+    def __show(self, action):
+        if action['level'] == 'databases':
+            return self.get_database(format_type='dict')
+        return self.get_table(format_type='dict')
+
+    def __use(self, action):
+        return self.select_db(action['database'])
+
+    def __exit(self, _):
+        return 'exit'
+
+    def execute(self, statement):
+        action = SQLParser().parse(statement)
+
+        res = None
+
+        if action['type'] in self.__action_map:
+            res = self.__action_map.get(action['type'])(action)
+
+            if action['type'] in ['insert', 'update', 'delete', 'create', 'drop']:
+                self.commit()
+
+        return res
+
+    def run(self):
+        while True:
+            statement = input('\033[00;37misadb>')
+            try:
+                res = self.execute(statement)
+                if res in ['exit', 'quit']:
+                    print('Goodbye!')
+                    return
+
+                if res:
+                    pt = prettytable.PrettyTable(res[0].keys())
+                    pt.align = 'l'
+                    for line in res:
+                        pt.align = 'r'
+                        pt.add_row(line.values())
+                    print(pt)
+            except Exception as e:
+                print('\033[00;31m' + str(e))
 
     def select_db(self, db_name):
         if db_name not in self.__database_names:
